@@ -9,13 +9,15 @@
     <!-- Use title if it's in the page YAML frontmatter -->
     <title>MASS</title>
     
-    <%= stylesheet_link_tag "http://fonts.googleapis.com/css?family=Lato",
+    <%= stylesheet_link_tag "http://fonts.googleapis.com/css?family=Lato:200,300,400", 
 														"normalize",
 														"mass" %>
 
     <%= javascript_include_tag  "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js",
 																"//cdnjs.cloudflare.com/ajax/libs/pubnub/3.5.3/pubnub.min.js",
-																"mass" %>
+																"//cdnjs.cloudflare.com/ajax/libs/three.js/r58/three.min.js",
+																"//cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.js",
+																"visualizer" %>
   </head>
   
   <body class="<%= page_classes %>">
