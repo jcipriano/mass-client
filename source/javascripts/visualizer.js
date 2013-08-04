@@ -19,15 +19,59 @@ massviz.init = function() {
   this.cubeLength= 1;
   this.cubeWidth = 1;
   this.cameraDistance = 150;
-  
+  /*
   this.stats = new Stats();
   this.stats.setMode(1); // 0: fps, 1: ms
   this.stats.domElement.style.position = 'absolute';
   this.stats.domElement.style.left = '0px';
   this.stats.domElement.style.top = '0px';
   document.body.appendChild(this.stats.domElement);
+  */
+
+  massviz.create3DEnv();
+
+  this.started = false;
+
+  $('#intro').click(function(){
+    TweenLite.to('#intro', 2, {autoAlpha: 0});
+    
+    mass.pubnub.publish({
+      channel: "mass_channel",
+      message: {
+        type: 'ATTEND',
+        vizIgnore: true
+      }
+    });
+
   
-  this.create3DEnv();
+    // window resize
+    var that = massviz;
+    window.addEventListener('resize', function(e){
+      that.onWindowResized(e);
+    }, false );
+    massviz.onWindowResized(null);
+
+    // redner
+    massviz.renderLoop();
+
+    // listen
+    mass.events.add('MESSAGE', function(msg) {
+      if(msg.type == 'ATTEND'){
+        
+        if(!msg.vizIgnore) {
+          console.log('add an object');
+          massviz.createSphere();
+        }
+
+        if(massviz.group.children.length > 4) {
+          massviz.addParticles();
+        }
+      }
+    });
+    
+    massviz.started = true;
+
+  });
 };
 
 massviz.create3DEnv = function() {
@@ -48,12 +92,12 @@ massviz.create3DEnv = function() {
   
   // skybox
 	var textureCube = THREE.ImageUtils.loadTextureCube([
-    '/images/skybox/posx.jpg',
-    '/images/skybox/negx.jpg',
-    '/images/skybox/posy.jpg',
-    '/images/skybox/negy.jpg',
-    '/images/skybox/posz.jpg',
-    '/images/skybox/negz.jpg'
+    'images/skybox/posx.jpg',
+    'images/skybox/negx.jpg',
+    'images/skybox/posy.jpg',
+    'images/skybox/negy.jpg',
+    'images/skybox/posz.jpg',
+    'images/skybox/negz.jpg'
   ]);
   
 	var shader = THREE.ShaderLib['cube'];
@@ -84,26 +128,6 @@ massviz.create3DEnv = function() {
 	
 	this.group = new THREE.Object3D();
 	this.scene.add(this.group);
-	
-  // window resize
-  var that = this;
-  window.addEventListener('resize', function(e){
-	  that.onWindowResized(e);
-  }, false );
-	this.onWindowResized(null);
-  
-  // redner
-  this.renderLoop();
-  
-  // listen
-  mass.events.add('MESSAGE', function(msg) {
-    if(msg.type == 'ATTEND'){
-      console.log('add an object');
-      massviz.createSphere();
-    }
-  });
-  
-  massviz.addParticles();
 };
 
 massviz.addParticles = function() {
@@ -154,16 +178,18 @@ massviz.createSphere = function() {
 massviz.render = function() {
   
   // move camera
-  this.lon += 0.1;
-  this.lat = Math.max(-85, Math.min(85, this.lat));
-	this.phi = THREE.Math.degToRad(90 - this.lat);
-	this.theta = THREE.Math.degToRad(this.lon);
-  
-	this.camera.position.x = this.cameraDistance * Math.sin(this.phi) * Math.cos(this.theta);
-	this.camera.position.y = this.cameraDistance * Math.cos(this.phi);
-	this.camera.position.z = this.cameraDistance * Math.sin(this.phi) * Math.sin(this.theta);
-  this.camera.lookAt(this.scene.position);
-  
+  if(massviz.group.children.length > 2) {
+    this.lon += 0.1;
+    this.lat = Math.max(-85, Math.min(85, this.lat));
+    this.phi = THREE.Math.degToRad(90 - this.lat);
+    this.theta = THREE.Math.degToRad(this.lon);
+
+    this.camera.position.x = this.cameraDistance * Math.sin(this.phi) * Math.cos(this.theta);
+    this.camera.position.y = this.cameraDistance * Math.cos(this.phi);
+    this.camera.position.z = this.cameraDistance * Math.sin(this.phi) * Math.sin(this.theta);
+    this.camera.lookAt(this.scene.position);
+  }
+
   // move group
   this.group.rotation.y = this.group.rotation.y - 0.007;
   this.group.rotation.x = this.group.rotation.x - 0.007;
@@ -175,12 +201,13 @@ massviz.render = function() {
       particle.add(particle.velocity);
     });
     this.particleSystem.geometry.__dirtyVertices = true;
-  
-    // update reflection
-    this.sphereMesh.visible = false; // off
-  	this.cubeCamera.updateCubeMap( this.renderer, this.scene );
-    this.sphereMesh.visible = true; // on
   }
+  
+  // update reflection
+  this.sphereMesh.visible = false; // off
+  this.cubeCamera.updateCubeMap( this.renderer, this.scene );
+  this.sphereMesh.visible = true; // on
+
   // render
   this.renderer.render(this.scene, this.camera);
 };

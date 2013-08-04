@@ -17,8 +17,8 @@
 # page "/path/to/file.html", :layout => false
 #
 # With alternative layout
-page "index.html", :layout => :index
-page "attend.html", :layout => :attend
+page "viz.html", :layout => :index
+page "index.html", :layout => :attend
 page "pads.html", :layout => :pads
 #
 # A path which all have the same layout
@@ -65,7 +65,7 @@ configure :build do
   # activate :asset_hash
 
   # Use relative URLs
-  # activate :relative_assets
+  activate :relative_assets
 
   # Or use a different image path
   # set :http_path, "/Content/images/"
