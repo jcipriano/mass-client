@@ -25,12 +25,12 @@ mass.init = function() {
 };
 
 mass.onConnect = function(channel) {
-  console.log('Pubnub: Connected.');
+  console.log('mass.onConnect', channel);
   mass.events.publish('CONNECT', channel);
 };
 
 mass.onMessage = function(msg) {
-  console.log(msg);
+  console.log('mass.onMessage', msg);
   mass.events.publish('MESSAGE', msg);
 };
 

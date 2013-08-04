@@ -1,0 +1,57 @@
+body {
+  background-color: #444;
+  color: #FFF;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 5px;
+  text-align: center;
+}
+
+div#v-shim {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  overflow: visible;
+}
+
+div#h-shim {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  width: 1px;
+  height: 200px;
+  overflow: visible;
+  
+}
+
+div.action {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: -100px;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 0 auto;
+  background-size: 200px 200px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  
+  .action-txt {
+    position: relative;
+    top: 92px;
+    left: 2px;
+  }
+}
+
+div#attend {
+  background: url(../images/mobile-triangle.png);
+  background-size: 200px 200px;
+}
+
+div#exit {
+  background: url(../images/mobile-circle.png);
+  background-size: 200px 200px;
+}
