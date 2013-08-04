@@ -19,6 +19,7 @@
 # With alternative layout
 page "index.html", :layout => :index
 page "attend.html", :layout => :attend
+page "pads.html", :layout => :pads
 #
 # A path which all have the same layout
 # with_layout :admin do
